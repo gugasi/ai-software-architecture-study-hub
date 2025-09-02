@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI & Software Architecture Study Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .main-content {
+            transition: opacity 0.5s ease-in-out;
+        }
+        .nav-button.active {
+            background-color: #4f46e5;
+            color: white;
+        }
+        .flashcard-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+        .draggable {
+            cursor: grab;
+        }
+        .drop-zone, .arch-drop-zone {
+            transition: background-color 0.2s;
+        }
+        .drop-zone.drag-over, .arch-drop-zone.drag-over {
+            background-color: #3730a3;
+        }
+
+        /* Robot Quiz Styles */
+        .robot-container svg {
+            width: 150px;
+            height: auto;
+            transition: transform 0.3s ease-in-out;
+        }
+        .robot-face { transition: opacity 0.3s; }
+        .robot-face.hidden { opacity: 0; }
+        
+        .question-bubble {
+            position: relative;
+            background: #4a5568;
+            border-radius: .4em;
+            padding: 1.5rem;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .question-bubble:after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border: 20px solid transparent;
+            border-top-color: #4a5568;
+            border-bottom: 0;
+            border-left: 0;
+            margin-left: -10px;
+            margin-bottom: -20px;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .quiz-option {
+            transition: all 0.2s ease-in-out;
+        }
+        .quiz-option.correct {
+            background-color: #16a34a !important;
+            color: white;
+            transform: scale(1.05);
+        }
+        .quiz-option.incorrect {
+            background-color: #dc2626 !important;
+            color: white;
+        }
+         .quiz-option:disabled {
+            opacity: 0.7;
+        }
+        
+        /* Architecture Game Styles */
+        .arch-component {
+            cursor: grab;
+        }
+        .arch-drop-zone.correct {
+            border-color: #16a34a;
+            background-color: rgba(22, 163, 74, 0.2);
+        }
+         .arch-component.placed {
+            cursor: not-allowed;
+            background-color: #2d3748;
+         }
+
+         /* Easter Egg Memento Style */
+        #dog-memento {
+            position: fixed;
+            bottom: -200px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 150px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        #dog-memento.show {
+            animation: peekaboo 4s ease-in-out;
+        }
+        @keyframes peekaboo {
+            0% { bottom: -200px; }
+            20% { bottom: 0; }
+            80% { bottom: 0; }
+            100% { bottom: -200px; }
+        }
+        #tail {
+            animation: wag 0.5s infinite;
+            transform-origin: bottom right;
+        }
+        @keyframes wag {
+            0%, 100% { transform: rotate(10deg); }
+            50% { transform: rotate(-10deg); }
+        }
+
+
+    </style>
+</head>
+<body class="bg-gray-900 text-gray-200">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header id="page-header" class="text-center mb-8 cursor-pointer" title="Click me for a surprise!">
+            <h1 class="text-4xl md:text-5xl font-bold text-white mb-2">AI & Software Architecture Study Hub</h1>
+            <p class="text-lg text-gray-400">Your interactive guide for mastering key concepts and case studies.</p>
+        </header>
+
+        <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
+            <button data-section="home" class="nav-button active px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Home</button>
+            <button data-section="studyGuide" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Master Checklist</button>
+            <button data-section="caseStudies" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Case Studies</button>
+            <button data-section="quiz" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Quiz</button>
+            <button data-section="flashcards" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Flashcards</button>
+            <button data-section="game" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Architecture Assembly</button>
+        </nav>
+
+        <main id="main-content" class="main-content bg-gray-800 p-6 rounded-2xl shadow-lg min-h-[500px]">
+            <!-- Content will be injected here by JavaScript -->
+        </main>
+        
+        <footer class="text-center mt-8 text-gray-500">
+            <p class="mb-2">Main Developer: Guram Sikharulidze</p>
+            <p class="text-xs text-gray-600 max-w-2xl mx-auto">This study hub is intended for educational purposes only. It is designed to aid in studying and should be used responsibly and legally. The creator is not liable for any misuse.</p>
+            <p class="mt-2 font-semibold text-gray-400">Good luck with your exam!</p>
+        </footer>
+    </div>
+
+    <!-- Dog Memento Easter Egg -->
+    <div id="dog-memento">
+        <svg viewBox="0 0 100 100">
+            <g id="yorkie">
+                <!-- Tail -->
+                <path id="tail" d="M85,60 C95,50 105,70 95,80" fill="#A0522D"/>
+                <!-- Body -->
+                <path d="M20,70 C10,90 90,90 80,70 C90,50 10,50 20,70" fill="#8B4513"/>
+                <!-- Head -->
+                <circle cx="30" cy="45" r="20" fill="#A0522D"/>
+                <!-- Ears -->
+                <path d="M15,30 Q20,15 25,30" fill="#8B4513"/>
+                <path d="M35,30 Q40,15 45,30" fill="#8B4513"/>
+                <!-- Eyes -->
+                <circle cx="25" cy="45" r="2" fill="black"/>
+                <circle cx="35" cy="45" r="2" fill="black"/>
+                <!-- Nose -->
+                <circle cx="30" cy="52" r="3" fill="black"/>
+            </g>
+        </svg>
+    </div>
+
+
+    <script>
+        const appData = {
+            studyGuide: {
+                title: "Master Project Checklist",
+                sections: [
+                    {
+                        title: "Phase 1: Quick Analysis of the Task",
+                        points: [
+                            "<strong>Deconstruct the Task:</strong> Core Problem/Goal, Context & Audience, Constraints.",
+                            "<strong>Preliminary Stakeholder Analysis:</strong> Who benefits? Who provides data? Who needs convincing?",
+                            "<strong>Core Value Proposition / The 'Hook':</strong> What is the biggest, most compelling benefit?",
+                        ]
+                    },
+                    {
+                        title: "I. Introduction & Vision",
+                        points: ["Engaging welcome.", "Clearly state the project name and its core objective.", "Briefly describe the overarching problem being solved."]
+                    },
+                    {
+                        title: "II. The Problem & The AI Impact",
+                        points: ["Present 2-3 specific, quantifiable 'pain points'.", "Explain precisely how AI/IT solves each point.", "Highlight areas of greatest AI impact."]
+                    },
+                    {
+                        title: "III. Data Sources & Sensors (The Fuel)",
+                        points: ["List 3-5 different data types (sensor data, logs, APIs, etc.).", "Explain HOW data is collected.", "<strong>Data Privacy & Compliance (CRITICAL!):</strong> Mention GDPR/DSA, Anonymization, Encryption, DPO involvement.", "Mention Gaia-X for data sovereignty as a strategic advantage."]
+                    },
+                    {
+                        title: "IV. Key Stakeholders & Collaboration",
+                        points: ["Identify 3-5 critical stakeholders.", "Explain WHY each is important.", "Describe HOW collaboration will work."]
+                    },
+                    {
+                        title: "V. AI Algorithms & Techniques (The Brain)",
+                        points: ["Identify 2-3 core problem areas (prediction, optimization, etc.).", "Name 1-2 suitable AI algorithms for each area (e.g., Classification, RL, NLP).", "State the specific benefit of each algorithm.", "Mention real-time capabilities if crucial and explain WHY."]
+                    },
+                    {
+                        title: "VI. Solution Architecture & Technologies (The Blueprint)",
+                        points: [
+                            "<strong>Architecture Diagram:</strong> Sketch a simple block diagram.",
+                            "<strong>Key Components:</strong> Data Ingestion (Kafka, Kinesis), Data Storage (S3, Snowflake, NoSQL, SQL, GraphDB, VectorDB), Data Processing (Spark), AI/ML Platform (SageMaker, Azure ML), API Layer, Cloud Platform (AWS, Azure, GCP), LLM Integration, Monitoring, Containers (Docker, Kubernetes)."
+                        ]
+                    },
+                    {
+                        title: "VII. Evaluation & Continuous Improvement",
+                        points: ["How will success be measured?", "How will feedback be collected (A/B tests, surveys)?", "How will models be updated/retrained (CI/CD, MLOps)?", "Mention iterative development (Agile, Scrum)."]
+                    },
+                    {
+                        title: "VIII. The Biggest Weakness & Mitigation",
+                        points: ["Identify the most critical weakness (often non-technical: data bias, cost, complexity, vendor lock-in).", "Propose 1-2 concrete countermeasures (Transparency, Data Governance, FinOps)."]
+                    },
+                    {
+                        title: "IX. Implementation Timeline (Phases)",
+                        points: ["Divide the project into 3 logical phases (e.g., planning, implementation, optimization).", "Provide rough timeframes per phase."]
+                    }
+                ]
+            },
+            caseStudies: [
+                {
+                    id: "healthapp",
+                    title: "Al-Powered Health Monitoring App",
+                    source: "Mentor's Test Case",
+                    description: "A next-generation mobile app by SmartHealth, Inc. to optimize well-being using data from wearables, air pollution monitoring, and sleep analysis.",
+                    questions: [
+                        "What is the technical stack for a system integrating wearable data, environmental APIs, and user input?",
+                        "What algorithms are best for predicting future air pollution from real-time environmental data?",
+                        "Which models are appropriate for showing trends and making predictions from health sensor data (e.g., pulse)?",
+                        "How would you design a Diet Planning Tool that suggests recipes based on user data?",
+                        "What kind of machine learning models would classify sleep rhythms as healthy or unhealthy?"
+                    ],
+                    focusTopics: ["IoT & Wearables", "Predictive Analytics", "Time-Series Forecasting", "Classification Models", "Recommendation Systems"]
+                },
+                {
+                    id: "uniai",
+                    title: "UniAI: University Management System",
+                    source: "Friend/Classmate",
+                    description: "A transformative AI-enabled project to revolutionize university operations, including admissions, course allocation, and student support via a virtual assistant.",
+                    questions: [
+                        "What are the specific pain points and challenges faced by the university that this project aims to address?",
+                        "What are the potential risks and ethical considerations associated with implementing AI in university processes?",
+                        "What are the data requirements for UniAI, and how will data be collected, stored, and processed? What are the key algorithms to work with these data?",
+                        "What is the long-term sustainability plan for UniAI, including scalability and adaptability?",
+                        "What is the biggest weakness of your proposed solution?"
+                    ],
+                    focusTopics: ["Process Automation", "NLP", "Predictive Analytics", "Data Privacy"]
+                },
+                {
+                    id: "travel",
+                    title: "AI-Powered Smart Travel Agent",
+                    source: "Guram's Example Case Study",
+                    description: "A platform to enhance city tourism by providing personalized recommendations, dynamic pricing, and real-time travel assistance using AI.",
+                    questions: [
+                        "What are the options for your technical stack (Frontend, Backend, Database, AI/ML libraries, Cloud Hosting)?",
+                        "What are the potential revenue streams for this platform?",
+                        "What algorithms are most relevant for Personalized Itinerary Planning?",
+                        "What models are useful for Dynamic Pricing & Smart Discounts?",
+                        "How would you implement Real-Time Local Event & Attraction Updates?",
+                        "What AI technique is used for analyzing tourist reviews?"
+                    ],
+                    focusTopics: ["Recommendation Engines", "Dynamic Pricing", "Real-Time Data Processing", "Sentiment Analysis"]
+                },
+                {
+                    id: "access",
+                    title: "Case 1: Face-Detection Access Control",
+                    source: "Classmates",
+                    description: "Design a custom face-detection system for students and employees to access university buildings.",
+                    questions: [
+                        "How would you approach such a request? What are the main aspects to consider?",
+                        "Come up with a sample architecture of the technical solution.",
+                        "What technologies would you use for storing data, training models, and ensuring GDPR compliance?",
+                        "What is the biggest weakness of your proposed solution?"
+                    ],
+                    focusTopics: ["Computer Vision", "Biometric Data", "GDPR", "System Architecture"]
+                },
+                 {
+                    id: "security",
+                    title: "Case 2: SecureNetAI",
+                    source: "Classmates",
+                    description: "Propose an AI project to revolutionize a company's IT security by detecting and preventing cyber threats in real-time.",
+                    questions: [
+                        "What specific pain points does this project address?",
+                        "What are the risks/challenges of using AI in IT security (e.g., false positives)?",
+                        "What are the data requirements and key algorithms?",
+                        "How will AI models be continuously updated to adapt to evolving threats?",
+                        "What is the biggest weakness of your proposed solution?"
+                    ],
+                    focusTopics: ["Cybersecurity", "Anomaly Detection", "Real-time Analytics", "MLOps"]
+                },
+                {
+                    id: "tourist",
+                    title: "Case 3: Tourist Flow Analysis",
+                    source: "Classmates",
+                    description: "Design a system for the city of Vienna to analyze tourist behavior, identify interests, and predict future tourism demands.",
+                    questions: [
+                        "What kinds of data sources would you consider and how would you collect this data?",
+                        "Who are the most relevant stakeholders?",
+                        "What analysis steps and results can you promise? What algorithms would you use?",
+                        "What software and physical infrastructure would you consider to avoid tracking tourists intrusively?",
+                        "Which databases, libraries, and tools should be considered for purchase?"
+                    ],
+                    focusTopics: ["Big Data Analytics", "Data Collection", "Predictive Modeling", "Stakeholder Management"]
+                }
+            ],
+            quizQuestions: [
+                { question: "For the Health App, what model is best for predicting future air pollution based on current data?", options: ["Classification Model", "Time-Series Forecasting", "Clustering Algorithm", "NLP"], answer: "Time-Series Forecasting" },
+                { question: "In the UniAI case, which AI technique is best suited for the 24/7 virtual assistant?", options: ["Regression Analysis", "Clustering", "Natural Language Processing (NLP)", "Computer Vision"], answer: "Natural Language Processing (NLP)" },
+                { question: "What kind of data is central to the Health Monitoring App's functionality?", options: ["Social media posts", "Financial transactions", "Sensor data from wearables", "Academic records"], answer: "Sensor data from wearables" },
+                { question: "According to the master checklist, what is a critical consideration for a project in Austria?", options: ["HIPAA Compliance", "Budget constraints only", "GDPR / DSA Compliance", "Team size"], answer: "GDPR / DSA Compliance" },
+                { question: "For the 'AI-Powered Smart Travel Agent', what is the best algorithm type for suggesting customized travel plans?", options: ["Classification algorithms", "Recommendation engines", "Clustering algorithms", "Reinforcement learning"], answer: "Recommendation engines" },
+                { question: "Which machine learning task is most appropriate for analyzing sleep patterns to see if they are 'healthy'?", options: ["Regression", "Clustering", "Classification", "Anomaly Detection"], answer: "Classification" },
+                { question: "In system architecture, which technology is primarily used for scalable microservices?", options: ["Apache Kafka", "AWS S3", "Kubernetes", "MongoDB"], answer: "Kubernetes" },
+                { question: "What is a common 'biggest weakness' for AI projects, as noted in the checklist?", options: ["Algorithm speed", "Lack of programming languages", "Data quality and bias", "Too much funding"], answer: "Data quality and bias" },
+                { question: "For the SecureNetAI project, what is the main purpose of using behavioral analysis?", options: ["To optimize database queries", "To detect advanced malware and zero-day attacks", "To design the user interface", "To manage cloud costs"], answer: "To detect advanced malware and zero-day attacks" },
+                { question: "Which type of database is recommended for social media graphs or public transport networks?", options: ["SQL (PostgresDB)", "NoSQL (MongoDB)", "GraphDB (Neo4j)", "Blob Storage (S3)"], answer: "GraphDB (Neo4j)" },
+                { question: "What does 'MLOps' refer to in the context of continuous improvement?", options: ["A new cloud provider", "A type of AI algorithm", "Automated pipelines for updating and retraining models", "A project management methodology"], answer: "Automated pipelines for updating and retraining models" },
+                { question: "In a face-detection system, what is the primary data being processed?", options: ["User logs", "Text messages", "Biometric data", "Financial records"], answer: "Biometric data" },
+                { question: "What is sentiment analysis used for in the Smart Travel Agent case?", options: ["Adjusting flight prices", "Analyzing tourist reviews for recommendations", "Real-time event tracking", "Booking hotels"], answer: "Analyzing tourist reviews for recommendations" },
+                { question: "Which technology is suitable for real-time data ingestion in a high-traffic system like SecureNetAI?", options: ["MySQL", "Apache Kafka", "AWS S3", "Docker"], answer: "Apache Kafka" },
+                { question: "What is a key principle of GDPR mentioned in the study guide?", options: ["Data maximization", "Data minimization", "Public data sharing", "Keeping data indefinitely"], answer: "Data minimization" }
+            ],
+            flashcards: [
+                { term: "Service-Oriented Architecture (SOA)", definition: "A software design style where services are provided to the other components by application components, through a communication protocol over a network. It promotes loose coupling and reusability." },
+                { term: "Data Lake", definition: "A centralized repository for storing large amounts of raw, unstructured, and structured data at any scale. Best for ML model training and big data analytics." },
+                { term: "Data Warehouse", definition: "A system used for reporting and data analysis, considered a core component of business intelligence. Stores structured, filtered data for business analysis." },
+                { term: "Kubernetes", definition: "An open-source container orchestration system for automating software deployment, scaling, and management. Essential for managing microservices at scale." },
+                { term: "Apache Kafka", definition: "A distributed event streaming platform used for high-performance data pipelines, streaming analytics, and data integration. Crucial for real-time systems." },
+                { term: "Reinforcement Learning (RL)", definition: "An area of machine learning where an agent learns to make decisions by taking actions in an environment to maximize a cumulative reward. Good for dynamic optimization problems." },
+                { term: "Time-Series Forecasting", definition: "A machine learning technique that analyzes historical data points ordered in time to predict future values. Essential for pollution or stock price prediction." },
+                { term: "GDPR", definition: "General Data Protection Regulation. A regulation in EU law on data protection and privacy for all individuals within the European Union and the European Economic Area." },
+                { term: "Vector Database", definition: "A database that stores data as high-dimensional vectors. Essential for LLM optimization, semantic search, and recommendation systems to find similar items quickly." },
+                { term: "FinOps", definition: "A cultural practice and operational model that brings financial accountability to the variable spend model of cloud, enabling teams to make trade-offs between speed, cost, and quality." },
+                { term: "Gaia-X", definition: "An EU project to build a federated, secure data infrastructure. Mentioning it shows strategic thinking about data sovereignty, interoperability, and trust." }
+            ],
+            architectureGame: {
+                title: "Architecture Assembly Challenge",
+                description: "Based on the case study, drag the correct components from the bank into the empty architecture slots. This will test your ability to apply knowledge under pressure!",
+                scenarios: [
+                    {
+                        id: 'healthapp',
+                        title: 'Health Monitoring App Architecture',
+                        description: 'This mobile app needs to process wearable sensor data, analyze sleep, and predict air pollution. Assemble its core architecture.',
+                        slots: [
+                            { id: 's1', label: 'Primary Data Source', accepts: 'data' },
+                            { id: 's2', label: 'Pollution Prediction Model', accepts: 'model' },
+                            { id: 's3', label: 'Sleep Analysis Model', accepts: 'algorithm' },
+                            { id: 's4', label: 'User Interface', accepts: 'frontend' }
+                        ],
+                        components: [
+                            { id: 'c1', content: 'IoT Wearable Sensor Data', type: 'data' },
+                            { id: 'c2', content: 'Time-Series Forecasting', type: 'model' },
+                            { id: 'c3', content: 'Classification Model', type: 'algorithm' },
+                            { id: 'c4', content: 'Mobile App (Frontend)', type: 'frontend' },
+                            { id: 'c5', content: 'GraphDB', type: 'storage' }, // distractor
+                            { id: 'c6', content: 'Sentiment Analysis', type: 'model' } // distractor
+                        ]
+                    },
+                    {
+                        id: 'uniai',
+                        title: 'UniAI System Architecture',
+                        description: 'UniAI needs to automate admissions, allocate courses, and provide a 24/7 virtual assistant. Build a high-level architecture for this system.',
+                        slots: [
+                            { id: 's1', label: 'Data Sources', accepts: 'data' },
+                            { id: 's2', label: 'Data Storage', accepts: 'storage' },
+                            { id: 's3', label: 'AI/ML Technique', accepts: 'model' },
+                            { id: 's4', label: 'Key Platform', accepts: 'platform' }
+                        ],
+                        components: [
+                            { id: 'c1', content: 'Applicant Data & Preferences', type: 'data' },
+                            { id: 'c2', content: 'SQL Database (Postgres)', type: 'storage' },
+                            { id: 'c3', content: 'NLP for Virtual Assistant', type: 'model' },
+                            { id: 'c4', content: 'Cloud Platform (AWS/Azure)', type: 'platform' },
+                            { id: 'c5', content: 'Computer Vision', type: 'model' }, // distractor
+                            { id: 'c6', content: 'Streaming Data (Kafka)', type: 'data' } // distractor
+                        ]
+                    },
+                    {
+                        id: 'travel',
+                        title: 'Smart Travel Agent Architecture',
+                        description: 'This platform needs personalized recommendations and dynamic pricing for city tourism. Build its core architecture.',
+                         slots: [
+                            { id: 's1', label: 'Primary User Data', accepts: 'data' },
+                            { id: 's2', label: 'Price Adjustment Model', accepts: 'model' },
+                            { id: 's3', label: 'Recommendation Algorithm', accepts: 'algorithm' },
+                            { id: 's4', label: 'User Interaction', accepts: 'frontend' }
+                        ],
+                        components: [
+                            { id: 'c1', content: 'User Preferences & History', type: 'data' },
+                            { id: 'c2', content: 'Machine Learning (Regression)', type: 'model' },
+                            { id: 'c3', content: 'Recommendation Engine', type: 'algorithm' },
+                            { id: 'c4', content: 'Smart Chatbot (NLP)', type: 'frontend' },
+                            { id: 'c5', content: 'Anomaly Detection', type: 'algorithm' }, // distractor
+                            { id: 'c6', content: 'GraphDB', type: 'storage' } // distractor
+                        ]
+                    },
+                    {
+                        id: 'security',
+                        title: 'SecureNetAI Architecture',
+                        description: 'SecureNetAI must analyze network traffic in real-time to detect threats. Construct a suitable system.',
+                         slots: [
+                            { id: 's1', label: 'Real-time Data Source', accepts: 'ingestion' },
+                            { id: 's2', label: 'Threat Detection Model', accepts: 'model' },
+                            { id: 's3', label: 'Data Processing', accepts: 'processing' },
+                            { id: 's4', label: 'Container Management', accepts: 'orchestration' }
+                        ],
+                        components: [
+                            { id: 'c1', content: 'Network Logs (via Kafka)', type: 'ingestion' },
+                            { id: 'c2', content: 'Behavioral Analysis (ML)', type: 'model' },
+                            { id: 'c3', content: 'Apache Spark', type: 'processing' },
+                            { id: 'c4', content: 'Kubernetes', type: 'orchestration' },
+                            { id: 'c5', content: 'User Feedback Forms', type: 'ingestion' }, // distractor
+                            { id: 'c6', content: 'Sentiment Analysis', type: 'model' } // distractor
+                        ]
+                    }
+                ]
+            }
+        };
+
+        const mainContent = document.getElementById('main-content');
+        const navButtons = document.querySelectorAll('.nav-button');
+        let synth; // To be initialized on first user interaction
+
+        // --- SOUND INITIALIZATION ---
+        function initAudio() {
+            if (Tone.context.state !== 'running') {
+                Tone.start();
+            }
+            synth = new Tone.Synth().toDestination();
+            document.body.removeEventListener('click', initAudio);
+        }
+        document.body.addEventListener('click', initAudio, { once: true });
+
+
+        // --- SOUND FUNCTIONS ---
+        function playTalkingSound() {
+            if (!synth) return;
+            const now = Tone.now();
+            synth.triggerAttackRelease("C5", "16n", now);
+            synth.triggerAttackRelease("E5", "16n", now + 0.1);
+        }
+        function playCorrectSound() {
+            if (!synth) return;
+            const now = Tone.now();
+            synth.triggerAttackRelease("C5", "8n", now);
+            synth.triggerAttackRelease("G5", "8n", now + 0.1);
+        }
+        function playIncorrectSound() {
+            if (!synth) return;
+            const now = Tone.now();
+            synth.triggerAttackRelease("G3", "8n", now);
+            synth.triggerAttackRelease("C3", "8n", now + 0.15);
+        }
+        function playMementoSound() {
+             if (!synth) return;
+            const now = Tone.now();
+            synth.triggerAttackRelease("C6", "16n", now);
+        }
+
+
+        // --- RENDER FUNCTIONS ---
+        
+        function renderHome() {
+            mainContent.innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-white mb-4">Welcome to Your Study Hub!</h2>
+                    <p class="text-lg text-gray-300 mb-6">This interactive platform is designed to consolidate all your study materials into one place. Use the navigation above to explore different sections.</p>
+                    <div class="bg-gray-700 p-6 rounded-lg text-left max-w-2xl mx-auto">
+                        <h3 class="text-xl font-semibold text-indigo-400 mb-3">Key Exam Topics to Focus On:</h3>
+                        <ul class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2">
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Databases</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Web Development</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Distributed Systems</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Networking</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Algorithms</li>
+                            <li class="flex items-center"><svg class="w-5 h-5 mr-2 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>Data Mining & ML</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderStudyGuide() {
+            const { title, sections } = appData.studyGuide;
+            const sectionsHtml = sections.map(section => `
+                <div class="mb-4 bg-gray-700/50 rounded-lg p-4">
+                    <h3 class="text-xl font-semibold text-indigo-400 mb-2">${section.title}</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1">
+                        ${section.points.map(point => `<li>${point}</li>`).join('')}
+                    </ul>
+                </div>
+            `).join('');
+
+            mainContent.innerHTML = `
+                <h2 class="text-3xl font-bold text-white mb-6 text-center">${title}</h2>
+                ${sectionsHtml}
+            `;
+        }
+
+        function renderCaseStudies() {
+             mainContent.innerHTML = `
+                <h2 class="text-3xl font-bold text-white mb-6 text-center">Case Studies</h2>
+                <div id="case-study-list" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${appData.caseStudies.map(cs => `
+                        <div class="bg-gray-700 p-6 rounded-lg hover:bg-gray-600/70 cursor-pointer transition-colors" data-case-id="${cs.id}">
+                            <h3 class="text-xl font-bold text-indigo-400 mb-2">${cs.title}</h3>
+                            <p class="text-sm text-gray-400 mb-3">Source: ${cs.source}</p>
+                            <p class="text-gray-300">${cs.description}</p>
+                        </div>
+                    `).join('')}
+                </div>
+                <div id="case-study-detail" class="hidden mt-6"></div>
+            `;
+            document.querySelectorAll('#case-study-list > div').forEach(el => {
+                el.addEventListener('click', () => showCaseStudyDetail(el.dataset.caseId));
+            });
+        }
+        
+        function showCaseStudyDetail(caseId) {
+            const cs = appData.caseStudies.find(c => c.id === caseId);
+            if (!cs) return;
+
+            const detailView = document.getElementById('case-study-detail');
+            document.getElementById('case-study-list').classList.add('hidden');
+            
+            detailView.innerHTML = `
+                <button id="back-to-cases" class="mb-6 px-4 py-2 rounded-lg font-semibold bg-indigo-600 hover:bg-indigo-700 transition-colors">&larr; Back to All Cases</button>
+                <div class="bg-gray-700/50 rounded-lg p-6">
+                    <h2 class="text-3xl font-bold text-white mb-2">${cs.title}</h2>
+                    <p class="text-md text-gray-400 mb-4">Source: ${cs.source}</p>
+                    <p class="text-lg text-gray-300 mb-6">${cs.description}</p>
+                    <h3 class="text-2xl font-semibold text-indigo-400 mb-4">Key Questions to Address:</h3>
+                    <ul class="list-decimal list-inside text-gray-300 space-y-3">
+                        ${cs.questions.map(q => `<li>${q}</li>`).join('')}
+                    </ul>
+                     <div class="mt-6">
+                        <h4 class="text-lg font-semibold text-indigo-400 mb-2">Primary Focus Topics:</h4>
+                        <div class="flex flex-wrap gap-2">
+                            ${cs.focusTopics.map(t => `<span class="bg-gray-600 text-indigo-300 px-3 py-1 rounded-full text-sm">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+            detailView.classList.remove('hidden');
+            document.getElementById('back-to-cases').addEventListener('click', renderCaseStudies);
+        }
+
+        // --- QUIZ FUNCTIONS ---
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let quizShuffled = [];
+
+        function renderQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            quizShuffled = [...appData.quizQuestions].sort(() => Math.random() - 0.5);
+            displayQuizQuestion();
+        }
+
+        function setRobotFace(state = 'neutral') {
+            document.querySelectorAll('.robot-face').forEach(face => face.classList.add('hidden'));
+            const faceToShow = document.getElementById(`robot-${state}`);
+            if (faceToShow) {
+                faceToShow.classList.remove('hidden');
+            }
+        }
+
+        function displayQuizQuestion() {
+            if (currentQuestionIndex >= quizShuffled.length) {
+                showQuizResult();
+                return;
+            }
+            const q = quizShuffled[currentQuestionIndex];
+            
+            playTalkingSound();
+
+            mainContent.innerHTML = `
+                <div class="flex flex-col items-center justify-center">
+                    <div id="question-area" class="w-full max-w-2xl mb-8">
+                        <!-- Content injected by JS -->
+                    </div>
+
+                    <div class="robot-container mb-4">
+                        <svg viewBox="0 0 100 100">
+                            <!-- Body -->
+                            <rect x="15" y="40" width="70" height="50" rx="10" fill="#4a5568"/>
+                            <rect x="40" y="90" width="20" height="10" fill="#2d3748"/>
+                             <!-- Head -->
+                            <rect x="25" y="10" width="50" height="35" rx="10" fill="#718096"/>
+                            <rect x="45" y="5" width="10" height="5" fill="#a0aec0"/>
+                            <!-- Faces -->
+                            <g id="robot-neutral" class="robot-face">
+                                <circle cx="40" cy="25" r="4" fill="#2d3748"/>
+                                <circle cx="60" cy="25" r="4" fill="#2d3748"/>
+                                <rect x="42" y="35" width="16" height="2" fill="#2d3748" rx="1"/>
+                            </g>
+                            <g id="robot-correct" class="robot-face hidden">
+                                <path d="M35 25 L40 30 L50 20" stroke="#34d399" stroke-width="4" fill="none" stroke-linecap="round"/>
+                                <path d="M55 25 L60 30 L70 20" stroke="#34d399" stroke-width="4" fill="none" stroke-linecap="round"/>
+                                <path d="M40 35 Q50 40 60 35" stroke="#34d399" stroke-width="2" fill="none"/>
+                            </g>
+                            <g id="robot-incorrect" class="robot-face hidden">
+                               <path d="M35 20 L45 30 M45 20 L35 30" stroke="#ef4444" stroke-width="4" fill="none" stroke-linecap="round"/>
+                               <path d="M55 20 L65 30 M65 20 L55 30" stroke="#ef4444" stroke-width="4" fill="none" stroke-linecap="round"/>
+                               <path d="M40 38 Q50 33 60 38" stroke="#ef4444" stroke-width="2" fill="none"/>
+                            </g>
+                        </svg>
+                    </div>
+
+                    <p class="text-center text-gray-400 mb-6">Question ${currentQuestionIndex + 1} of ${quizShuffled.length}</p>
+
+                     <div id="options-area" class="w-full max-w-2xl">
+                         <!-- Options will be here -->
+                    </div>
+                </div>
+            `;
+            
+            setRobotFace('neutral');
+
+            const questionArea = document.getElementById('question-area');
+            questionArea.innerHTML = `
+                <div class="question-bubble">
+                    <h3 class="text-xl font-semibold text-gray-200 text-center">${q.question}</h3>
+                </div>`;
+            
+            const optionsArea = document.getElementById('options-area');
+            const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+            optionsArea.innerHTML = `
+                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    ${shuffledOptions.map(option => `
+                        <button class="quiz-option text-left p-4 rounded-lg bg-gray-600 hover:bg-indigo-600">${option}</button>
+                    `).join('')}
+                </div>
+            `;
+
+            document.querySelectorAll('.quiz-option').forEach(btn => {
+                btn.addEventListener('click', handleQuizAnswer);
+            });
+        }
+        
+        function handleQuizAnswer(e) {
+            const selectedOption = e.target.textContent;
+            const correctAnswer = quizShuffled[currentQuestionIndex].answer;
+            const options = document.querySelectorAll('.quiz-option');
+
+            options.forEach(opt => {
+                opt.disabled = true;
+                 if(opt.textContent === correctAnswer) {
+                    opt.classList.add('correct');
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                score++;
+                e.target.classList.add('correct');
+                setRobotFace('correct');
+                playCorrectSound();
+            } else {
+                e.target.classList.add('incorrect');
+                setRobotFace('incorrect');
+                playIncorrectSound();
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                displayQuizQuestion();
+            }, 2500);
+        }
+
+        function showQuizResult() {
+            const finalScore = Math.round((score / quizShuffled.length) * 100);
+            let resultMessage = "Keep practicing!";
+            if (finalScore >= 90) {
+                 resultMessage = "Excellent work! You've mastered it!";
+            } else if (finalScore >= 70) {
+                 resultMessage = "Great job! You're on the right track.";
+            }
+
+            mainContent.innerHTML = `
+                <div class="text-center flex flex-col items-center">
+                    <h2 class="text-3xl font-bold text-white mb-4">Quiz Complete!</h2>
+                    <p class="text-5xl font-bold mb-4 ${finalScore >= 70 ? 'text-green-400' : 'text-yellow-400'}">
+                        ${finalScore}%
+                    </p>
+                    <p class="text-xl text-gray-300 mb-4">You answered ${score} out of ${quizShuffled.length} questions correctly.</p>
+                    <p class="text-lg text-indigo-300 mb-8">${resultMessage}</p>
+                    <div class="robot-container mb-4">
+                        <svg viewBox="0 0 100 100">
+                             <rect x="15" y="40" width="70" height="50" rx="10" fill="#4a5568"/><rect x="40" y="90" width="20" height="10" fill="#2d3748"/>
+                             <rect x="25" y="10" width="50" height="35" rx="10" fill="#718096"/><rect x="45" y="5" width="10" height="5" fill="#a0aec0"/>
+                             <g class="robot-face ${finalScore >= 70 && finalScore < 90 ? '' : 'hidden'}"><circle cx="40" cy="25" r="4" fill="#2d3748"/><circle cx="60" cy="25" r="4" fill="#2d3748"/><rect x="42" y="35" width="16" height="2" fill="#2d3748" rx="1"/></g>
+                             <g class="robot-face ${finalScore >= 90 ? '' : 'hidden'}"><path d="M35 25 L40 30 L50 20" stroke="#34d399" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M55 25 L60 30 L70 20" stroke="#34d399" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M40 35 Q50 40 60 35" stroke="#34d399" stroke-width="2" fill="none"/></g>
+                            <g class="robot-face ${finalScore < 70 ? '' : 'hidden'}"><path d="M35 20 L45 30 M45 20 L35 30" stroke="#ef4444" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M55 20 L65 30 M65 20 L55 30" stroke="#ef4444" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M40 38 Q50 33 60 38" stroke="#ef4444" stroke-width="2" fill="none"/></g>
+                        </svg>
+                    </div>
+                    <button id="restart-quiz" class="px-6 py-3 rounded-lg font-semibold bg-indigo-600 hover:bg-indigo-700 transition-colors">Try Again</button>
+                </div>
+            `;
+            document.getElementById('restart-quiz').addEventListener('click', renderQuiz);
+        }
+
+        // --- FLASHCARD FUNCTIONS ---
+        let currentCardIndex = 0;
+        let cardsShuffled = [];
+        
+        function renderFlashcards() {
+            currentCardIndex = 0;
+            cardsShuffled = [...appData.flashcards].sort(() => Math.random() - 0.5);
+            displayFlashcard();
+        }
+
+        function displayFlashcard() {
+             const card = cardsShuffled[currentCardIndex];
+             mainContent.innerHTML = `
+                <h2 class="text-3xl font-bold text-white mb-2 text-center">Flashcards</h2>
+                <p class="text-center text-gray-400 mb-6">Card ${currentCardIndex + 1} of ${cardsShuffled.length}</p>
+                <div class="perspective w-full max-w-lg mx-auto h-64">
+                    <div id="flashcard" class="flashcard w-full h-full relative cursor-pointer">
+                        <div class="flashcard-inner w-full h-full">
+                            <div class="flashcard-front absolute w-full h-full bg-gray-700 rounded-lg p-6 flex items-center justify-center text-center">
+                                <h3 class="text-2xl font-semibold">${card.term}</h3>
+                            </div>
+                            <div class="flashcard-back absolute w-full h-full bg-indigo-700 rounded-lg p-6 flex items-center justify-center text-center">
+                                <p class="text-lg">${card.definition}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center items-center gap-4 mt-6">
+                    <button id="prev-card" class="px-4 py-2 rounded-lg font-semibold bg-gray-600 hover:bg-gray-500 transition-colors">Previous</button>
+                    <p class="text-gray-400">Click card to flip</p>
+                    <button id="next-card" class="px-4 py-2 rounded-lg font-semibold bg-gray-600 hover:bg-gray-500 transition-colors">Next</button>
+                </div>
+            `;
+            document.getElementById('flashcard').addEventListener('click', (e) => {
+                e.currentTarget.classList.toggle('flipped');
+            });
+            document.getElementById('prev-card').addEventListener('click', showPrevCard);
+            document.getElementById('next-card').addEventListener('click', showNextCard);
+        }
+        
+        function showNextCard() {
+            currentCardIndex = (currentCardIndex + 1) % cardsShuffled.length;
+            displayFlashcard();
+        }
+
+        function showPrevCard() {
+            currentCardIndex = (currentCardIndex - 1 + cardsShuffled.length) % cardsShuffled.length;
+            displayFlashcard();
+        }
+        
+        // --- ARCHITECTURE GAME FUNCTIONS ---
+        let currentScenarioIndex = 0;
+        let gameScenariosShuffled = [];
+
+        function renderArchitectureGame() {
+            const gameData = appData.architectureGame;
+            currentScenarioIndex = 0;
+            gameScenariosShuffled = [...gameData.scenarios].sort(() => Math.random() - 0.5);
+            displayGameScenario();
+        }
+
+        function displayGameScenario() {
+            const gameData = appData.architectureGame;
+            const scenario = gameScenariosShuffled[currentScenarioIndex];
+            const shuffledComponents = [...scenario.components].sort(() => Math.random() - 0.5);
+
+            mainContent.innerHTML = `
+                <div class="text-center">
+                    <h2 class="text-3xl font-bold text-white mb-2">${gameData.title}</h2>
+                    <p class="text-gray-400 mb-6">${gameData.description}</p>
+                </div>
+                <div class="bg-gray-700/50 p-6 rounded-lg">
+                    <h3 class="text-2xl font-semibold text-indigo-400 mb-2">${scenario.title}</h3>
+                    <p class="text-gray-300 mb-6">${scenario.description}</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div class="lg:col-span-1 bg-gray-900/50 p-4 rounded-lg">
+                            <h4 class="text-lg font-semibold text-center mb-4">Component Bank</h4>
+                            <div id="component-bank" class="space-y-3">
+                                ${shuffledComponents.map(c => `<div id="${c.id}" class="arch-component bg-gray-700 p-3 rounded-lg text-center" draggable="true" data-type="${c.type}">${c.content}</div>`).join('')}
+                            </div>
+                        </div>
+                        <div class="lg:col-span-2 bg-gray-900/50 p-4 rounded-lg">
+                             <h4 class="text-lg font-semibold text-center mb-4">Architecture Diagram</h4>
+                            <div id="architecture-slots" class="space-y-4">
+                                ${scenario.slots.map(s => `
+                                    <div class="flex items-center gap-4">
+                                        <span class="w-1/3 text-right font-semibold text-gray-400">${s.label}:</span>
+                                        <div id="${s.id}" class="arch-drop-zone w-2/3 bg-gray-800 border-2 border-dashed border-gray-600 p-3 rounded-lg min-h-[52px]" data-accepts="${s.accepts}"></div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                 <div id="game-feedback" class="text-center mt-6 h-10"></div>
+                 <div class="flex justify-center mt-4">
+                    <button id="next-scenario" class="hidden px-6 py-2 rounded-lg font-semibold bg-indigo-600 hover:bg-indigo-700">Next Scenario</button>
+                 </div>
+            `;
+            addArchDragAndDropListeners();
+        }
+        
+        function addArchDragAndDropListeners() {
+            const draggables = document.querySelectorAll('.arch-component');
+            const dropZones = document.querySelectorAll('.arch-drop-zone');
+
+            draggables.forEach(draggable => {
+                draggable.addEventListener('dragstart', e => {
+                    e.dataTransfer.setData('text/plain', e.target.id);
+                    e.target.classList.add('opacity-50');
+                });
+                draggable.addEventListener('dragend', e => e.target.classList.remove('opacity-50'));
+            });
+
+            dropZones.forEach(zone => {
+                zone.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    if (!zone.hasChildNodes()) zone.classList.add('drag-over');
+                });
+                zone.addEventListener('dragleave', e => zone.classList.remove('drag-over'));
+                zone.addEventListener('drop', e => {
+                    e.preventDefault();
+                    zone.classList.remove('drag-over');
+                    if (zone.hasChildNodes()) return;
+
+                    const id = e.dataTransfer.getData('text');
+                    const draggableElement = document.getElementById(id);
+                    const draggedType = draggableElement.dataset.type;
+                    const acceptedType = zone.dataset.accepts;
+
+                    if (draggedType === acceptedType) {
+                        zone.appendChild(draggableElement);
+                        draggableElement.classList.add('placed');
+                        draggableElement.setAttribute('draggable', 'false');
+                        zone.classList.add('correct');
+                        playCorrectSound();
+                        checkArchGameCompletion();
+                    } else {
+                        const feedback = document.getElementById('game-feedback');
+                        feedback.innerHTML = `<p class="text-red-400 font-semibold">That component doesn't fit here. Try again.</p>`;
+                        playIncorrectSound();
+                        setTimeout(() => feedback.innerHTML = '', 2000);
+                    }
+                });
+            });
+        }
+        
+        function checkArchGameCompletion() {
+            const scenario = gameScenariosShuffled[currentScenarioIndex];
+            const filledSlots = document.querySelectorAll('.arch-drop-zone.correct').length;
+
+            if (filledSlots === scenario.slots.length) {
+                const feedback = document.getElementById('game-feedback');
+                feedback.innerHTML = `<p class="text-green-400 font-bold text-xl">Architecture Complete! Well done.</p>`;
+                
+                if (currentScenarioIndex < gameScenariosShuffled.length - 1) {
+                    const nextButton = document.getElementById('next-scenario');
+                    nextButton.classList.remove('hidden');
+                    nextButton.onclick = () => {
+                        currentScenarioIndex++;
+                        displayGameScenario();
+                    };
+                } else {
+                     feedback.innerHTML += `<p class="text-indigo-300 mt-2 font-bold text-xl">You've completed all scenarios!</p>`;
+                     const restartButton = document.createElement('button');
+                     restartButton.textContent = "Play Again";
+                     restartButton.className = "mt-4 px-6 py-2 rounded-lg font-semibold bg-indigo-600 hover:bg-indigo-700";
+                     restartButton.onclick = renderArchitectureGame;
+                     document.querySelector('.flex.justify-center.mt-4').appendChild(restartButton);
+                }
+            }
+        }
+
+
+        // --- MAIN APP LOGIC ---
+
+        function handleNavClick(e) {
+            const section = e.target.dataset.section;
+            if (!section) return;
+
+            mainContent.style.opacity = '0';
+            
+            setTimeout(() => {
+                navButtons.forEach(btn => btn.classList.remove('active'));
+                e.target.classList.add('active');
+
+                switch (section) {
+                    case 'home': renderHome(); break;
+                    case 'studyGuide': renderStudyGuide(); break;
+                    case 'caseStudies': renderCaseStudies(); break;
+                    case 'quiz': renderQuiz(); break;
+                    case 'flashcards': renderFlashcards(); break;
+                    case 'game': renderArchitectureGame(); break;
+                }
+                mainContent.style.opacity = '1';
+            }, 300);
+        }
+
+        navButtons.forEach(button => {
+            button.addEventListener('click', handleNavClick);
+        });
+
+        // Easter Egg Logic
+        let clickCount = 0;
+        let clickTimer;
+        document.getElementById('page-header').addEventListener('click', () => {
+            clickCount++;
+            clearTimeout(clickTimer);
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 2000);
+
+            if (clickCount === 5) {
+                clickCount = 0;
+                const dog = document.getElementById('dog-memento');
+                if (!dog.classList.contains('show')) {
+                    dog.classList.add('show');
+                    playMementoSound();
+                    setTimeout(() => {
+                        dog.classList.remove('show');
+                    }, 4000);
+                }
+            }
+        });
+
+
+        // Initial render
+        renderHome();
+    </script>
+</body>
+</html>
