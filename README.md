@@ -10,6 +10,17 @@
 
 ---
 
+## Table of Contents
+- [Description](#-description)
+- [Features](#-features)
+- [Author](#-author)
+- [How to Use](#-how-to-use)
+- [License](#-license)
+- [Disclaimer](#️-disclaimer)
+
+
+---
+
 ## Description
 An interactive, animated study hub designed to help students prepare for **bachelor's level final exams** in software engineering and AI architecture.  
 This tool consolidates complex case studies, key concepts, and exam questions into **engaging quizzes, flashcards, and a hands-on "Architecture Assembly" game**.
