@@ -32,8 +32,7 @@ This tool consolidates complex case studies, key concepts, and exam questions in
 - **Interactive Case Studies** – In-depth review of multiple real-world exam scenarios.  
 - **Animated Quiz System** – Test your knowledge with a friendly robot tutor who provides instant feedback.  
 - **Digital Flashcards** – Quickly review and memorize key terminology and architectural concepts.  
-- **Architecture Assembly Game** – A drag-and-drop challenge to build system architectures based on case study requirements, reinforcing practical application of knowledge.  
-- **Personal Memento** – An easter egg dedicated to a beloved Yorkshire Terrier.  
+- **Architecture Assembly Game** – A drag-and-drop challenge to build system architectures based on case study requirements, reinforcing practical application of knowledge.   
 
 ---
 
