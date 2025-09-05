@@ -439,6 +439,25 @@
                         ]
                     },
                     {
+                        id: 'datapipeline',
+                        title: 'Big Data Processing Pipeline Architecture',
+                        description: 'A company needs to analyze terabytes of user clickstream data daily to find frequent browsing patterns. Assemble the core components of this distributed data pipeline.',
+                        slots: [
+                            { id: 's1', label: 'Data Ingestion', accepts: 'ingestion' },
+                            { id: 's2', label: 'Distributed Storage', accepts: 'storage' },
+                            { id: 's3', label: 'Processing Framework', accepts: 'processing' },
+                            { id: 's4', label: 'Pattern Mining Algorithm', accepts: 'algorithm' }
+                        ],
+                        components: [
+                            { id: 'c1', content: 'Apache Kafka', type: 'ingestion' },
+                            { id: 'c2', content: 'Hadoop Distributed File System (HDFS)', type: 'storage' },
+                            { id: 'c3', content: 'MapReduce', type: 'processing' },
+                            { id: 'c4', content: 'Apriori or FP-Growth', type: 'algorithm' },
+                            { id: 'c5', content: 'Relational SQL Database', type: 'storage' }, // distractor
+                            { id: 'c6', content: 'REST API', type: 'ingestion' } // distractor
+                        ]
+                    },
+                    {
                         id: 'security',
                         title: 'SecureNetAI Architecture',
                         description: 'SecureNetAI must analyze network traffic in real-time to detect threats. Construct a suitable system.',
@@ -976,4 +995,5 @@
 </body>
 
 </html>
+
 
