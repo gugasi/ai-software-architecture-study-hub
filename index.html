@@ -138,6 +138,40 @@
             50% { transform: rotate(-10deg); }
         }
 
+        /* Core Concepts Table Style */
+        .concepts-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .concepts-table th, .concepts-table td {
+            border: 1px solid #4a5568;
+            padding: 12px;
+            text-align: left;
+        }
+        .concepts-table th {
+            background-color: #2d3748;
+            font-weight: 600;
+            color: #a0aec0;
+        }
+        .concepts-table td {
+            background-color: #4a5568;
+        }
+         .concepts-table code {
+            background-color: #1a202c;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: monospace;
+            color: #cbd5e0;
+        }
+        .eli5 {
+             background-color: rgba(79, 70, 229, 0.1);
+             border-left: 4px solid #4f46e5;
+             padding: 1rem;
+             margin-top: 0.5rem;
+             font-style: italic;
+             color: #c7d2fe;
+        }
+
 
     </style>
 </head>
@@ -151,6 +185,7 @@
 
         <nav class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8">
             <button data-section="home" class="nav-button active px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Home</button>
+            <button data-section="coreConcepts" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Core Concepts</button>
             <button data-section="studyGuide" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Master Checklist</button>
             <button data-section="caseStudies" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Case Studies</button>
             <button data-section="quiz" class="nav-button px-4 py-2 rounded-lg font-semibold bg-gray-700 hover:bg-indigo-600 transition-colors">Quiz</button>
@@ -159,8 +194,7 @@
         </nav>
 
         <main id="main-content" class="main-content bg-gray-800 p-6 rounded-2xl shadow-lg min-h-[500px]">
-            <!-- Content will be injected here by JavaScript -->
-        </main>
+            </main>
         
         <footer class="text-center mt-8 text-gray-500">
             <p class="mb-2">Main Developer: Guram Sikharulidze</p>
@@ -169,23 +203,16 @@
         </footer>
     </div>
 
-    <!-- Dog Memento Easter Egg -->
     <div id="dog-memento">
         <svg viewBox="0 0 100 100">
             <g id="yorkie">
-                <!-- Tail -->
                 <path id="tail" d="M85,60 C95,50 105,70 95,80" fill="#A0522D"/>
-                <!-- Body -->
                 <path d="M20,70 C10,90 90,90 80,70 C90,50 10,50 20,70" fill="#8B4513"/>
-                <!-- Head -->
                 <circle cx="30" cy="45" r="20" fill="#A0522D"/>
-                <!-- Ears -->
                 <path d="M15,30 Q20,15 25,30" fill="#8B4513"/>
                 <path d="M35,30 Q40,15 45,30" fill="#8B4513"/>
-                <!-- Eyes -->
                 <circle cx="25" cy="45" r="2" fill="black"/>
                 <circle cx="35" cy="45" r="2" fill="black"/>
-                <!-- Nose -->
                 <circle cx="30" cy="52" r="3" fill="black"/>
             </g>
         </svg>
@@ -352,10 +379,29 @@
                 { question: "According to the CAP theorem, a system that must remain available during a network partition cannot simultaneously guarantee what?", options: ["Latency", "Scalability", "Strong Consistency", "Durability"], answer: "Strong Consistency" },
                 { question: "What is the primary advantage of the FP-Growth algorithm over the Apriori algorithm for frequent itemset mining?", options: ["It uses less memory", "It avoids costly candidate generation by using a tree structure", "It can handle non-transactional data", "It guarantees finding the optimal solution faster"], answer: "It avoids costly candidate generation by using a tree structure" },
                 { question: "During the TCP 3-Way Handshake, what is the correct sequence of flags sent between a client and a server to establish a connection?", options: ["SYN, ACK, FIN", "SYN, SYN-ACK, ACK", "SYN, SYN-ACK, FIN", "ACK, SYN, ACK"], answer: "SYN, SYN-ACK, ACK" },
-                { question: "In the KDD process, what is the step that involves combining data from multiple sources into a single, coherent store?", options: ["Data Cleaning", "Data Selection", "Data Integration", "Pattern Evaluation"], answer: "Data Integration" }
+                { question: "In the KDD process, what is the step that involves combining data from multiple sources into a single, coherent store?", options: ["Data Cleaning", "Data Selection", "Data Integration", "Pattern Evaluation"], answer: "Data Integration" },
+                { question: "Which algorithm is essential for route planning in a smart traffic system?", options: ["K-Means Clustering", "Decision Tree", "Dijkstra's Algorithm", "Apriori"], answer: "Dijkstra's Algorithm" },
+                { question: "What does 'T' stand for in the acronym ETL for data pipelines?", options: ["Transmit", "Transform", "Table", "Terminal"], answer: "Transform" },
+                { question: "In microservices architecture, what is the role of an API Gateway?", options: ["To store user data", "To run machine learning models", "To act as a single entry point for all client requests", "To directly connect to the database"], answer: "To act as a single entry point for all client requests" },
+                { question: "Which of these is a primary characteristic of a monolithic architecture?", options: ["Independently deployable services", "A single, tightly coupled codebase", "Polyglot persistence", "High fault isolation"], answer: "A single, tightly coupled codebase" },
+                { question: "For predicting air pollution levels over the next 24 hours, which model type is most suitable?", options: ["Classification Model", "Clustering Model", "Time-Series Model (e.g., ARIMA, LSTM)", "Recommendation Engine"], answer: "Time-Series Model (e.g., ARIMA, LSTM)" }
             ],
             flashcards: [
-                { term: "Service-Oriented Architecture (SOA)", definition: "A software design style where services are provided to the other components by application components, through a communication protocol over a network. It promotes loose coupling and reusability." },
+                { term: "Dijkstra's Algorithm", definition: "A classic algorithm for finding the shortest paths between nodes in a weighted graph. Essential for route planning and network routing." },
+                { term: "A* Search Algorithm", definition: "An informed search algorithm, similar to Dijkstra's, but more efficient because it uses a heuristic to guide its search towards the goal. Widely used in games and route-finding." },
+                { term: "Data Pipeline", definition: "A series of data processing steps. Raw data enters one end, and processed, valuable information comes out the other. Often involves ETL (Extract, Transform, Load)." },
+                { term: "ETL (Extract, Transform, Load)", definition: "A type of data pipeline. Extract data from sources, Transform it into a usable format (clean, aggregate), and Load it into a destination (like a data warehouse)." },
+                { term: "Microservices Architecture", definition: "An architectural style that structures an application as a collection of small, loosely coupled, and independently deployable services." },
+                { term: "Monolithic Architecture", definition: "A traditional architectural style where an application is built as a single, unified unit. All components are interconnected and interdependent." },
+                { term: "Service-Oriented Architecture (SOA)", definition: "A software design style where services are provided to other components by application components through a communication protocol over a network. It promotes loose coupling and reusability." },
+                { term: "API Gateway", definition: "A management tool that sits between a client and a collection of backend services. It acts as a reverse proxy to accept all application programming interface (API) calls, aggregate the various services required to fulfill them, and return the appropriate result." },
+                { term: "REST (Representational State Transfer)", definition: "An architectural style for providing standards between computer systems on the web, making it easier for systems to communicate with each other. Commonly uses HTTP methods (GET, POST, PUT, DELETE)." },
+                { term: "gRPC (Google Remote Procedure Call)", definition: "A high-performance, open-source universal RPC framework. It uses Protocol Buffers by default for serializing data and is often more efficient than REST/JSON for internal microservice communication." },
+                { term: "OAuth 2.0", definition: "An authorization framework that enables applications to obtain limited access to user accounts on an HTTP service. It delegates user authentication to the service that hosts the user account." },
+                { term: "JWT (JSON Web Token)", definition: "A compact, URL-safe means of representing claims to be transferred between two parties. Often used for authentication and information exchange after a user has logged in." },
+                { term: "ARIMA", definition: "AutoRegressive Integrated Moving Average. A statistical model used for analyzing and forecasting time-series data. It works well on data with a clear trend or seasonality." },
+                { term: "Decision Tree", definition: "A supervised machine learning algorithm used for both classification and regression. It's a flowchart-like structure where each internal node represents a 'test' on an attribute, each branch represents the outcome of the test, and each leaf node represents a class label." },
+                { term: "Random Forest", definition: "An ensemble learning method that operates by constructing a multitude of decision trees at training time. It outputs the class that is the mode of the classes (classification) or mean prediction (regression) of the individual trees." },
                 { term: "Data Lake", definition: "A centralized repository for storing large amounts of raw, unstructured, and structured data at any scale. Best for ML model training and big data analytics." },
                 { term: "Data Warehouse", definition: "A system used for reporting and data analysis, considered a core component of business intelligence. Stores structured, filtered data for business analysis." },
                 { term: "Kubernetes", definition: "An open-source container orchestration system for automating software deployment, scaling, and management. Essential for managing microservices at scale." },
@@ -381,6 +427,25 @@
                 title: "Architecture Assembly Challenge",
                 description: "Based on the case study, drag the correct components from the bank into the empty architecture slots. This will test your ability to apply knowledge under pressure!",
                 scenarios: [
+                    {
+                        id: 'smarttraffic',
+                        title: 'Smart Mobility Krems Architecture',
+                        description: 'Design an architecture for a smart traffic system to monitor congestion, predict air quality, and calculate optimal routes in the city of Krems.',
+                        slots: [
+                            { id: 's1', label: 'Data Ingestion', accepts: 'ingestion' },
+                            { id: 's2', label: 'Route Calculation', accepts: 'algorithm' },
+                            { id: 's3', label: 'Air Quality Prediction', accepts: 'model' },
+                            { id: 's4', label: 'Data Storage', accepts: 'storage' }
+                        ],
+                        components: [
+                            { id: 'c1', content: 'IoT Sensor Data & Traffic Cameras', type: 'ingestion' },
+                            { id: 'c2', content: 'Dijkstra / A* Algorithm', type: 'algorithm' },
+                            { id: 'c3', content: 'Time-Series Model (LSTM/ARIMA)', type: 'model' },
+                            { id: 'c4', content: 'Data Lake (e.g., S3 or NoSQL)', type: 'storage' },
+                            { id: 'c5', content: 'Sentiment Analysis', type: 'model' }, // distractor
+                            { id: 'c6', content: 'GraphDB', type: 'storage' } // distractor
+                        ]
+                    },
                     {
                         id: 'healthapp',
                         title: 'Health Monitoring App Architecture',
@@ -542,6 +607,169 @@
                 </div>
             `;
         }
+
+        function renderCoreConcepts() {
+             mainContent.innerHTML = `
+                <h2 class="text-3xl font-bold text-white mb-6 text-center">Core Concepts & Comparisons</h2>
+                
+                <div class="space-y-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-indigo-400 mb-3">Fundamental Algorithms</h3>
+                        <div class="bg-gray-700/50 rounded-lg p-4">
+                            <h4 class="text-xl font-bold">Dijkstra's Algorithm</h4>
+                            <p>Finds the shortest path between a starting node and all other nodes in a weighted graph. It cannot handle negative edge weights.</p>
+                            <blockquote class="eli5"><strong>ELI5:</strong> Imagine you're giving a GPS directions. Dijkstra's explores all nearby roads first, always picking the shortest path seen so far, until it finds the destination. It's thorough but doesn't know the general direction of the destination.</blockquote>
+                        </div>
+                        <div class="bg-gray-700/50 rounded-lg p-4 mt-4">
+                            <h4 class="text-xl font-bold">A* (A-Star) Search Algorithm</h4>
+                            <p>An extension of Dijkstra's that is more efficient for finding the shortest path to a single destination. It uses a heuristic (an educated guess) to prioritize paths that seem to be heading in the right direction.</p>
+                             <blockquote class="eli5"><strong>ELI5:</strong> A* is like a smarter GPS. It considers the distance already traveled (like Dijkstra) but also estimates the remaining distance to the target. This helps it avoid exploring roads that are obviously leading away from the destination, making it faster.</blockquote>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-indigo-400 mb-3">Data Systems</h3>
+                        <div class="bg-gray-700/50 rounded-lg p-4">
+                            <h4 class="text-xl font-bold">Data Pipeline & ETL</h4>
+                            <p>A <strong>Data Pipeline</strong> is a system for moving data from a source to a destination. <strong>ETL (Extract, Transform, Load)</strong> is a common type of data pipeline:</p>
+                            <ul class="list-disc list-inside ml-4 mt-2">
+                                <li><strong>Extract:</strong> Get data from various sources (databases, APIs, logs).</li>
+                                <li><strong>Transform:</strong> Clean, validate, aggregate, or reformat the data.</li>
+                                <li><strong>Load:</strong> Store the processed data in a target system, like a Data Warehouse.</li>
+                            </ul>
+                        </div>
+                         <div class="bg-gray-700/50 rounded-lg p-4 mt-4">
+                            <h4 class="text-xl font-bold">Data Lake vs. Data Warehouse</h4>
+                            <p>Both are for storing big data, but they have different purposes. A <strong>Data Lake</strong> stores vast amounts of raw, unstructured data (like logs, images) for later processing, often by data scientists. A <strong>Data Warehouse</strong> stores structured, filtered data that has already been processed for a specific purpose, typically for business analytics.</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold text-indigo-400 mb-3">Database Comparison</h3>
+                        <div class="overflow-x-auto">
+                            <table class="concepts-table">
+                                <thead>
+                                    <tr><th>Type</th><th>Structure</th><th>Schema</th><th>Use Case</th><th>Examples</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Relational (SQL)</strong></td>
+                                        <td>Tables with rows/columns</td>
+                                        <td>Fixed / Pre-defined</td>
+                                        <td>Transactional systems, business applications where data integrity is key.</td>
+                                        <td><code>PostgreSQL</code>, <code>MySQL</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Document (NoSQL)</strong></td>
+                                        <td>JSON-like documents</td>
+                                        <td>Flexible / Dynamic</td>
+                                        <td>Content management, flexible data, high scalability needs.</td>
+                                        <td><code>MongoDB</code>, <code>CouchDB</code></td>
+                                    </tr>
+                                     <tr>
+                                        <td><strong>Key-Value (NoSQL)</strong></td>
+                                        <td>Simple key-value pairs</td>
+                                        <td>Schemaless</td>
+                                        <td>Caching, session management, leaderboards (high speed).</td>
+                                        <td><code>Redis</code>, <code>DynamoDB</code></td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Graph (NoSQL)</strong></td>
+                                        <td>Nodes, Edges, Properties</td>
+                                        <td>Flexible</td>
+                                        <td>Social networks, recommendation engines, fraud detection.</td>
+                                        <td><code>Neo4j</code>, <code>Amazon Neptune</code></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div>
+                        <h3 class="text-2xl font-semibold text-indigo-400 mb-3">Architecture Patterns</h3>
+                         <div class="overflow-x-auto">
+                            <table class="concepts-table">
+                                <thead>
+                                    <tr><th>Pattern</th><th>Description</th><th>Pros</th><th>Cons</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>Monolith</strong></td>
+                                        <td>Application is a single, unified codebase.</td>
+                                        <td>Simple to develop and deploy initially.</td>
+                                        <td>Hard to scale, tight coupling, difficult to update.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>Microservices</strong></td>
+                                        <td>Application is a collection of small, independent services.</td>
+                                        <td>Scalable, fault isolation, tech flexibility.</td>
+                                        <td>Complex to manage, network latency, distributed data.</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>SOA</strong></td>
+                                        <td>Services are shared and reused across the enterprise (often larger than microservices).</td>
+                                        <td>Reusability, interoperability.</td>
+                                        <td>Can be complex, often relies on a central message bus (ESB).</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-2xl font-semibold text-indigo-400 mb-3">Key Machine Learning Concepts</h3>
+                        <div class="space-y-4">
+                             <div class="bg-gray-700/50 rounded-lg p-4">
+                                <h4 class="text-xl font-bold">Classification</h4>
+                                <p>This technique predicts a <strong>category</strong> or a class label. It answers questions like "Is this A or B?".</p>
+                                <blockquote class="eli5"><strong>Analogy:</strong> Sorting emails into 'Spam' and 'Not Spam' folders. You're classifying each email into a predefined category.</blockquote>
+                                <p class="mt-2"><strong>Go-To Algorithms:</strong></p>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li><strong>Decision Tree:</strong> A flowchart of yes/no questions to determine the category. It's easy to understand and explain.</li>
+                                    <li><strong>Random Forest:</strong> Uses many Decision Trees and takes a "majority vote" on the answer. It's more accurate and robust than a single tree.</li>
+                                </ul>
+                             </div>
+                             <div class="bg-gray-700/50 rounded-lg p-4">
+                                <h4 class="text-xl font-bold">Regression</h4>
+                                <p>This technique predicts a continuous <strong>numerical value</strong>. It answers questions like "How much?" or "How many?".</p>
+                                <blockquote class="eli5"><strong>Analogy:</strong> Predicting the price of a house based on its size and location. You're not choosing a category; you're estimating a specific number.</blockquote>
+                                <p class="mt-2"><strong>Go-To Algorithms:</strong></p>
+                                <ul class="list-disc list-inside ml-4">
+                                    <li><strong>Linear Regression:</strong> Tries to draw the best-fitting straight line through the data to make predictions. Simple and fast.</li>
+                                    <li><strong>Random Forest Regressor:</strong> Just like the classification version, but instead of voting, it averages the numerical predictions of all the individual trees.</li>
+                                </ul>
+                             </div>
+                             <div class="bg-gray-700/50 rounded-lg p-4">
+                                <h4 class="text-xl font-bold">Clustering</h4>
+                                <p>This technique finds natural <strong>groups or clusters</strong> in your data without any predefined labels. It's an example of <em>unsupervised learning</em>.</p>
+                                <blockquote class="eli5"><strong>Analogy:</strong> Grouping a store's customers based on their purchasing habits to create marketing segments. You don't know the groups beforehand; the algorithm finds them for you.</blockquote>
+                                <p class="mt-2"><strong>Go-To Algorithm:</strong></p>
+                                <ul class="list-disc list-inside ml-4">
+                                     <li><strong>K-Means Clustering:</strong> You tell it how many clusters ('K') to find, and it iteratively groups the data points so that items in the same group are as similar as possible.</li>
+                                </ul>
+                             </div>
+                             <div class="bg-gray-700/50 rounded-lg p-4">
+                                <h4 class="text-xl font-bold">Correlation</h4>
+                                <p>This is a statistical measure that describes the <strong>relationship</strong> between two variables. It is NOT for prediction.</p>
+                                <blockquote class="eli5"><strong>Analogy:</strong> Noticing that ice cream sales go up when the temperature rises. They are correlated. But you aren't predicting sales, just observing that the two variables move together. Correlation does not imply causation!</blockquote>
+                             </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                         <h3 class="text-2xl font-semibold text-indigo-400 mb-3">Note on Case Study Types</h3>
+                         <div class="bg-gray-700/50 rounded-lg p-4 text-sm text-gray-300">
+                            <p>While less common in technical interviews, it's good to know these exist:</p>
+                            <ul class="list-disc list-inside ml-4 mt-2">
+                                <li><strong>Exploratory:</strong> Done before a project to explore possibilities.</li>
+                                <li><strong>Illustrative/Descriptive:</strong> Describes a situation or project in detail.</li>
+                                <li><strong>Critical Instance:</strong> Examines a unique or unusual case to learn from it.</li>
+                            </ul>
+                         </div>
+                    </div>
+                </div>
+            `;
+        }
         
         function renderStudyGuide() {
             const { title, sections } = appData.studyGuide;
@@ -640,18 +868,14 @@
             mainContent.innerHTML = `
                 <div class="flex flex-col items-center justify-center">
                     <div id="question-area" class="w-full max-w-2xl mb-8">
-                        <!-- Content injected by JS -->
-                    </div>
+                        </div>
 
                     <div class="robot-container mb-4">
                         <svg viewBox="0 0 100 100">
-                            <!-- Body -->
                             <rect x="15" y="40" width="70" height="50" rx="10" fill="#4a5568"/>
                             <rect x="40" y="90" width="20" height="10" fill="#2d3748"/>
-                             <!-- Head -->
-                            <rect x="25" y="10" width="50" height="35" rx="10" fill="#718096"/>
+                             <rect x="25" y="10" width="50" height="35" rx="10" fill="#718096"/>
                             <rect x="45" y="5" width="10" height="5" fill="#a0aec0"/>
-                            <!-- Faces -->
                             <g id="robot-neutral" class="robot-face">
                                 <circle cx="40" cy="25" r="4" fill="#2d3748"/>
                                 <circle cx="60" cy="25" r="4" fill="#2d3748"/>
@@ -673,8 +897,7 @@
                     <p class="text-center text-gray-400 mb-6">Question ${currentQuestionIndex + 1} of ${quizShuffled.length}</p>
 
                      <div id="options-area" class="w-full max-w-2xl">
-                         <!-- Options will be here -->
-                    </div>
+                         </div>
                 </div>
             `;
             
@@ -951,6 +1174,7 @@
 
                 switch (section) {
                     case 'home': renderHome(); break;
+                    case 'coreConcepts': renderCoreConcepts(); break;
                     case 'studyGuide': renderStudyGuide(); break;
                     case 'caseStudies': renderCaseStudies(); break;
                     case 'quiz': renderQuiz(); break;
